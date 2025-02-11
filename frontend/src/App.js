@@ -2,6 +2,7 @@ import React from 'react';
 
 import Register from './pages/Register';
 import SelfRegistrationForm from './components/Banner';
+import BannerSection from './components/BannerSection';
 // import Login from './pages/Login';
 // import Chat from './pages/Chat';
 // import Home from './pages/HomePage';
@@ -11,6 +12,7 @@ import {BrowserRouter, Routes, Route} from 'react-router-dom';
 export default function App(){
   return(
     <BrowserRouter>
+    <BannerSection />
     <SelfRegistrationForm />
     <Routes>
       <Route path="/register" element={<Register />}></Route>

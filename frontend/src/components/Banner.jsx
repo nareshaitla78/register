@@ -1,41 +1,24 @@
-// import React from "react";
-
-// const Banner = () => {
-//   return (
-//     <div
-//       className="relative bg-cover bg-center h-64 flex items-center justify-between px-6"
-//       style={{
-//         backgroundImage: "url('https://th.bing.com/th/id/OIP.m4FmOjk0Bx-N4JaBzsBoTgHaEP?rs=1&pid=ImgDetMain')",
-//       }}
-//     >
-//       {/* Left Content (Optional if needed later) */}
-//       <div className="text-white">
-//         <h1 className="text-4xl font-bold">Welcome to Our Website</h1>
-//         <p className="text-lg mt-2">Explore the best content here.</p>
-//       </div>
-
-//       {/* Right Side Dropdown */}
-//       <div>
-//         <select
-//           className="bg-white text-black px-4 py-2 rounded-md shadow-md"
-//           defaultValue="en"
-//         >
-//           <option value="en">English</option>
-//           <option value="es">Spanish</option>
-//           <option value="fr">French</option>
-//           <option value="de">German</option>
-//         </select>
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default Banner;
 import React from "react";
 
 export default function SelfRegistrationForm() {
   return (
+
+ 
+   
+      //     
     <div className="min-h-screen flex items-center justify-center bg-blue-900">
+         <div>
+    <select
+      className="bg-white text-black px-4 py-2 rounded-md shadow-md"
+      defaultValue="en"
+    >
+      <option value="en">English</option>
+      <option value="es">Spanish</option>
+      <option value="fr">French</option>
+      <option value="de">German</option>
+    </select>
+  </div>
+
       <div className="bg-white rounded-lg shadow-lg p-8 w-full max-w-2xl">
         <h1 className="text-2xl font-bold text-blue-900 text-center mb-6">
           Self Registration Form
