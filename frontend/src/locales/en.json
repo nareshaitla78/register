@@ -1,0 +1,12 @@
+{
+    "title": "Self Registration Form",
+    "name": "Full Name",
+    "email": "Email",
+    "phone": "Phone Number",
+    "address": "Address",
+    "upload_photo": "Upload or Capture Photo",
+    "preview": "Preview",
+    "edit": "Edit",
+    "submit": "Submit"
+  }
+  
