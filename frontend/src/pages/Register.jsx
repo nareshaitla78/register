@@ -270,7 +270,7 @@ const Register = () => {
                 />
                 {errors.photo && <p className="text-red-500 text-sm">{errors.photo}</p>}
                 <button
-                  className="bg-blue-600 text-white px-4 py-2 rounded mt-4 w-full sm:w-auto xl:tw-w-[80%]"
+                  className="bg-blue-600 text-white px-4 py-2 rounded mt-4 w-full sm:w-auto md:tw-w-[100%]" style={{ width: "230px" }}
                 >
                   Take Photo
                 </button>
