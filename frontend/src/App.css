@@ -39,17 +39,3 @@
 
 
 
-<div className="flex justify-end mt-6">
-          <button className="border-2 px-4 py-2 rounded border-blue-300 text-blue-400 mr-6"  onClick={handleClear}>
-            Clear Form
-          </button>
-          <button
-            className={`bg-blue-600 text-white px-4 py-2 rounded ${
-              !(fullName && dateOfBirth && email && selectedImage && consent) ? "opacity-50 cursor-not-allowed" : ""
-            }`}
-            disabled={!(fullName && dateOfBirth && email && selectedImage && consent)}
-            onClick={handlePreview}
-          >
-            Preview
-          </button>
-        </div>

@@ -1,7 +1,9 @@
 import React, { useState, useRef } from "react";
+import axios from "axios";
 
 const Register = () => {
   const [selectedImage, setSelectedImage] = useState(null);
+  const [base64Image, setBase64Image] = useState(""); // State for Base64 image
   const [fullName, setFullName] = useState("");
   const [dateOfBirth, setDateOfBirth] = useState("");
   const [mobileNumber, setMobileNumber] = useState("");
@@ -12,22 +14,33 @@ const Register = () => {
   const [errors, setErrors] = useState({});
   const [previewData, setPreviewData] = useState(null);
   const [showSuccessPopup, setShowSuccessPopup] = useState(false);
-  const [uin, setUin] = useState(""); // State to store the generated UIN
+  const [uin, setUin] = useState("");
 
   const fileInputRef = useRef(null);
 
   // Function to generate a unique UIN
   const generateUIN = () => {
-    const randomNumber = Math.floor(Math.random() * 1000000000); // Generate a random number
-    return `UIN-${randomNumber}`; // Prefix with "UIN-" for uniqueness
+    const randomNumber = Math.floor(Math.random() * 1000000000);
+    return `UIN-${randomNumber}`;
   };
 
   // Function to handle file selection
   const handleFileChange = (event) => {
     const file = event.target.files[0];
     if (file) {
-      const imageUrl = URL.createObjectURL(file);
+      const imageUrl = URL.createObjectURL(file); // For preview
       setSelectedImage(imageUrl);
+
+      // Convert the file to Base64
+      const reader = new FileReader();
+      reader.onload = () => {
+        const base64String = reader.result; // Base64 string
+        setBase64Image(base64String); // Store Base64 string in state
+      };
+      reader.onerror = (error) => {
+        console.error("Error reading file:", error);
+      };
+      reader.readAsDataURL(file); // Read the file as Base64
     }
   };
 
@@ -104,16 +117,55 @@ const Register = () => {
   };
 
   // Function to handle submit button click
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
+    if (!validateForm()) return; // Validate the form before submission
+
     const newUIN = generateUIN(); // Generate a unique UIN
     setUin(newUIN); // Set the UIN in state
     setShowSuccessPopup(true); // Show success popup
     setPreviewData(null); // Close the preview popup
-    handleClear();
+    handleClear(); // Clear the form
+
+    // Prepare the userData object
+    const userData = {
+      fullName: [
+        {
+          language: "eng",
+          value: fullName,
+        },
+      ],
+      phone: `${mobileNumber}`,
+      email: email,
+      dateOfBirth: dateOfBirth,
+      gender: [
+        {
+          language: "eng",
+          value: gender,
+        },
+      ],
+      address: [
+        {
+          language: "eng",
+          value: address,
+        },
+      ],
+      photo: base64Image, // Use the Base64 string here
+    };
+
+    // Send data to the backend API
+    try {
+      const response = await axios.post(
+        "https://api-internal.mosipcon.mosip.net/v1/selfregistration/create",
+        userData
+      );
+      console.log("API Response:", response.data);
+    } catch (error) {
+      console.error("Error sending data to the API:", error);
+    }
   };
 
   return (
-    <div className="max-h-screen bg-[#0B1E48] flex items-center justify-center p-4">
+    <div className="min-h-screen bg-[#0B1E48] flex items-center justify-center p-4">
       <div className="bg-white rounded-xl shadow-lg w-full max-w-3xl p-8">
         <h2 className="text-2xl font-semibold">Self Registration Form</h2>
         <p className="text-gray-600 text-sm mb-6">
@@ -218,8 +270,7 @@ const Register = () => {
                 />
                 {errors.photo && <p className="text-red-500 text-sm">{errors.photo}</p>}
                 <button
-                  className="bg-blue-600 text-white px-4 py-2 rounded mt-4 w-full"
-                  style={{ width: "230px", margin_top: "60px" }}
+                  className="bg-blue-600 text-white px-4 py-2 rounded mt-4 w-full sm:w-auto xl:tw-w-[80%]"
                 >
                   Take Photo
                 </button>
@@ -267,8 +318,8 @@ const Register = () => {
           {errors.consent && <p className="text-red-500 text-sm">{errors.consent}</p>}
         </div>
 
-        <div className="flex justify-end mt-6">
-          <button className="border-2 px-4 py-2 rounded border-blue-300 text-blue-400 mr-6"  onClick={handleClear}>
+        <div className="flex sm:flex-col md:justify-end md:flex-row mt-6 ">
+          <button className="border-2 px-4 py-2 rounded border-blue-300 text-blue-400 xl:mr-6 sm:mb-4 md:mb-0 " onClick={handleClear}>
             Clear Form
           </button>
           <button
@@ -287,7 +338,7 @@ const Register = () => {
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
             <div className="bg-white rounded-xl p-8 w-full max-w-2xl">
               <h2 className="text-2xl font-semibold mb-6 text-center">Confirm Details</h2>
-              <div className="flex flex-col md:flex-row gap-6">
+              <div className="flex flex-row md:flex-row gap-6">
                 {/* Left Column for Details */}
                 <div className="flex-1 space-y-4">
                   <div>
@@ -351,33 +402,30 @@ const Register = () => {
 
         {/* Success Popup */}
         {showSuccessPopup && (
-  <div className="fixed inset-0 bg-[#0B1E48] bg-opacity-90 flex items-center justify-center">
-    <div className="bg-white rounded-xl p-8 w-full max-w-md text-center  border-green-600  border-t-4">
-      {/* Right Symbol (✓) */}
-      <div className="flex justify-center mb-4">
-        <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
-          <span className="text-green-600 text-2xl">✓</span>
-        </div>
-      </div>
+          <div className="fixed inset-0 bg-[#0B1E48] bg-opacity-90 flex items-center justify-center">
+            <div className="bg-white rounded-xl p-8 w-full max-w-md text-center border-green-600 border-t-4">
+              {/* Right Symbol (✓) */}
+              <div className="flex justify-center mb-4">
+                <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
+                  <span className="text-green-600 text-2xl">✓</span>
+                </div>
+              </div>
 
-      <h2 className="text-2xl font-semibold mb-4">Congratulations!</h2>
-      <p className="text-gray-600 mb-6">
-        Your Unique Identification Number (UIN) has  been <br/>successfully issued:
-        <span className=" text-black-600 font-semibold"> {uin}</span> <br/>
-        Please check your email for further details.
-      </p>
-      {/* <p className="text-gray-600 mb-6">
-        
-      </p> */}
-      <button
-        className="bg-green-700 text-white px-6 py-2 rounded-lg hover:bg-green-800 w-full"
-        onClick={() => setShowSuccessPopup(false)}
-      >
-        Okay
-      </button>
-    </div>
-  </div>
-)}
+              <h2 className="text-2xl font-semibold mb-4">Congratulations!</h2>
+              <p className="text-gray-600 mb-6">
+                Your Unique Identification Number (UIN) has been <br /> successfully issued:
+                <span className="text-black-600 font-semibold"> {uin}</span> <br />
+                Please check your email for further details.
+              </p>
+              <button
+                className="bg-green-700 text-white px-6 py-2 rounded-lg hover:bg-green-800 w-full"
+                onClick={() => setShowSuccessPopup(false)}
+              >
+                Okay
+              </button>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
